@@ -106,32 +106,50 @@ const STELLA_ZWAVE: HassDevice = {
 
 // Eurotronic Spirit Z-Wave Plus Thermostat
 const SPIRIT_ZWAVE_PLUS: HassDevice = {
-	type: 'climate',
-	object_id: 'thermostat',
-	values: [
-		'64-0-mode',
-		'49-0-Air temperature',
-		'67-0-setpoint-1',
-		'67-0-setpoint-11',
-	],
-	mode_map: { off: 0, heat: 1, cool: 11 },
-	setpoint_topic: {
-		1: '67-0-setpoint-1',
-		11: '67-0-setpoint-11',
-	},
-	default_setpoint: '67-0-setpoint-1',
-	discovery_payload: {
-		min_temp: 8,
-		max_temp: 28,
-		modes: ['off', 'heat', 'cool'],
-		mode_state_topic: '64-0-mode',
-		mode_command_topic: true,
-		current_temperature_topic: '49-0-Air temperature',
-		temp_step: 0.5,
-		current_temperature_template: '{{ value_json.value }}',
-		temperature_state_template: '{{ value_json.value }}',
-		temperature_command_topic: true,
-	},
+  type: 'climate',
+  object_id: 'thermostat',
+  values: [
+    '64-0-mode',
+    '49-0-Air temperature',
+    '67-0-setpoint-1',
+    '67-0-setpoint-11',
+  ],
+  mode_map: { off: 0, heat: 1, cool: 11 },
+  setpoint_topic: {
+    1: '67-0-setpoint-1',
+    11: '67-0-setpoint-11',
+  },
+  default_setpoint: '67-0-setpoint-1',
+  discovery_payload: {
+    min_temp: 8,
+    max_temp: 28,
+    modes: ['off', 'heat', 'cool'],
+    mode_state_topic: '64-0-mode',
+    mode_command_topic: true,
+    current_temperature_topic: '49-0-Air temperature',
+    temp_step: 0.5,
+    current_temperature_template: '{{ value_json.value }}',
+    temperature_state_template: '{{ value_json.value }}',
+    temperature_command_topic: true,
+  },
+}
+
+const THERMOSTAT_FIBARO: HassDevice = {
+  type: 'climate',
+  object_id: 'thermostat',
+  discovery_payload: {
+    min_temp: 5,
+    max_temp: 40,
+    temp_step: 0.5,
+    modes: ['off', 'heat'],
+    mode_state_template: '{{ { 0: "off", 1: "heat"}[value_json.value] | default("off") }}',
+    mode_command_template: '{{"1" if value == "heat" else "0"}}',
+    current_temperature_topic: true,
+    current_temperature_template: '{{ value_json.value }}',
+    temperature_state_topic: true,
+    temperature_state_template: '{{ value_json.value }}',
+    temperature_command_topic: true,
+  },
 }
 
 const COVER: HassDevice = {
@@ -346,7 +364,8 @@ const devices: { [deviceId: string]: HassDevice[] } = {
 	'99-12850-18756': [FAN_DIMMER], // GE 14314 Dimmer (Newer variant coming with FW 5.22)
 	'152-12-25857': [THERMOSTAT_2GIG], // Radio Thermostat / 2GIG CT101
 	'152-263-25601': [THERMOSTAT_2GIG], // Radio Thermostat / 2GIG CT100
-	'152-256-8194': [THERMOSTAT_2GIG], // Radio Thermostat / 2GIG CT32
+    '152-256-8194': [THERMOSTAT_2GIG], // Radio Thermostat / 2GIG CT32
+    '271-4097-4865': [THERMOSTAT_FIBARO], //Fibaro FGT001 
 	'271-4096-770': [COVER], // Fibaro FGS222
 	'328-1-1': [STELLA_ZWAVE],
 	'328-1-3': [SPIRIT_ZWAVE_PLUS],
